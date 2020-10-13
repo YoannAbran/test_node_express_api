@@ -8,6 +8,8 @@ target 'BarProject' do
 
   use_react_native!(:path => config["reactNativePath"])
 
+  pod 'RNCMaskedView', :path => '../node_modules/@react-native-community/masked-view'
+
   target 'BarProjectTests' do
     inherit! :complete
     # Pods for testing
