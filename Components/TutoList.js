@@ -1,4 +1,6 @@
 import React from 'react'
+import { NavigationEvents } from 'react-navigation';
+
 import {
   SafeAreaView,
   StyleSheet,
@@ -20,14 +22,14 @@ import {
 
       this.state = {
         title_input: '',
-        description_input: ''
+        description_input: '',
+        data:[]
       }
     }
   };
+
 //affichage api test
-  state ={
-    data:[]
-  };
+
   fetchData = async()=>{
     const response= await fetch('http://172.21.201.23:8080/api/tutorials')
     const tutorials = await response.json()
@@ -46,19 +48,23 @@ import {
         description: this.state.description_input
       })
     }).then((response)=>response.json())
-      .then((responseJson)=>{
+      .then(() => this.fetchData())
 
-      }).catch((error)=>{console.error(error);});
+      .catch((error)=>{console.error(error);});
   };
 
-  // displayTuto = (idtuto) => {
-  //   this.props.navigation.navigate('EditTuto', {idtuto: idtuto})
-  // }
 
   componentDidMount(){
-    this.fetchData()
+    const { navigation } = this.props
+    this._refreshData = navigation.addListener('focus', () => {
+      this.fetchData();
+    });
+    this.fetchData();
   };
 
+  componentWillUnmount() {
+  this._refreshData();
+}
   render(){
     const { navigation } = this.props
   return(
@@ -68,11 +74,13 @@ import {
          keyExtractor={(item,index) => index.toString()}
          renderItem={({item}) =>
          <View>
+
            <TouchableOpacity
            style={{ backgroundColor: 'yellow', borderWidth: 1 }}
            onPress={() => {
-           /* 1. Navigate to the Details route with params */
+
            navigation.navigate('Edit', {
+
              itemId: item.id,
              title: item.title,
              description : item.description,

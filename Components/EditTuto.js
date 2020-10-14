@@ -5,14 +5,15 @@ class EditTuto extends React.Component {
 
   constructor(props){
     super(props);{
-
+      const { route , navigation} = this.props;
+      const { itemId, title, description } = route.params;
       this.state = {
 
         title:'',
         descritption:'',
         tuto_id:'',
-        title_input: '',
-        description_input: '',
+        title_input: title,
+        description_input: description,
       }
     }
   };
@@ -20,6 +21,7 @@ class EditTuto extends React.Component {
   fetchPut = () => {
     const { route , navigation} = this.props;
     const { itemId, title, description } = route.params;
+
     fetch('http://172.21.201.23:8080/api/tutorials/'+ itemId,{
       method: 'PUT',
       headers:{
@@ -30,10 +32,8 @@ class EditTuto extends React.Component {
         title: this.state.title_input,
         description: this.state.description_input
       })
-    }).then((response)=>response.json())
-      .then((responseJson)=>{
-
-      }).catch((error)=>{console.error(error);});
+    }).then((response)=>response.json())    
+      .catch((error)=>{console.error(error);});
   };
 
 
@@ -45,22 +45,28 @@ class EditTuto extends React.Component {
         <Text>{JSON.stringify(itemId)}</Text>
         <TextInput
         placeholder  = 'title'
-       style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
+        style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
+        defaultValue = {title}
         onChangeText={title => this.setState({title_input: title})}
-       value = {title}
+
+
 
      />
         <TextInput
         placeholder= 'description'
-       style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
-      onChangeText={text => this.setState({description_input: text})}
-       value = {description}
+        style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
+        defaultValue = {description}
+        onChangeText={text => this.setState({description_input: text})}
+
+
 
      />
+
 
      <Button title='submit' onPress={this.fetchPut}/>
 
       </View>
+
     )
   }
 }
